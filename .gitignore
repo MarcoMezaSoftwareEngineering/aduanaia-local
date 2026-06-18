@@ -37,6 +37,7 @@ models/
 # --- IDE / SO ---
 .vscode/
 .idea/
+.claude/
 *.swp
 .DS_Store
 Thumbs.db
