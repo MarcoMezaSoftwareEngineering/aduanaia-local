@@ -1,0 +1,38 @@
+# Normaliza line endings — evita el típico problema de CRLF/LF en repos
+# colaborativos donde algunos clonan en Windows y otros en Linux/Mac.
+
+# Por defecto, normalizar a LF en el repo, restaurar al checkout según OS.
+* text=auto eol=lf
+
+# Texto que SIEMPRE debe usar LF (scripts shell, YAML, conf nix-like).
+*.py        text eol=lf
+*.sh        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.toml      text eol=lf
+*.ini       text eol=lf
+*.md        text eol=lf
+*.txt       text eol=lf
+*.env.example text eol=lf
+Dockerfile  text eol=lf
+
+# Scripts Windows: respetar CRLF.
+*.ps1       text eol=crlf
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+
+# Binarios — no diff ni merge.
+*.pdf       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.zip       binary
+*.gz        binary
+*.tar       binary
+*.parquet   binary
+*.traineddata binary
+
+# GitHub Linguist — no contar PDFs en estadísticas de lenguajes.
+docs/** linguist-vendored

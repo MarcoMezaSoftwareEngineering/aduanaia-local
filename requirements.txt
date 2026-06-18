@@ -1,0 +1,51 @@
+# --- Web stack ---
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-dotenv==1.0.1
+python-multipart==0.0.19
+httpx==0.28.1
+
+# --- Orquestación IA ---
+langchain==0.3.13
+langchain-core==0.3.28
+langchain-community==0.3.13
+langchain-ollama==0.2.2
+langgraph==0.2.61
+
+# --- Vector store ---
+# Cliente para Milvus Standalone corriendo en Docker (ver docker-compose.yml).
+# En Windows nativo no se usa milvus-lite; se conecta a localhost:19530.
+pymilvus==2.5.3
+
+# --- Extracción documental ---
+pymupdf==1.25.1
+pdfplumber==0.11.4
+pytesseract==0.3.13
+pillow==11.0.0
+
+# --- Embeddings / LLM local ---
+# Torch con CUDA 12.4 (compatible con drivers NVIDIA >= 550, incluido tu CUDA 13.1).
+# Instalar con índice CUDA específico:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+torch==2.5.1
+sentence-transformers==3.3.1
+transformers==4.47.1
+accelerate==1.2.1
+
+# --- Base de datos ---
+psycopg[binary]==3.2.3
+sqlalchemy==2.0.36
+alembic==1.14.0
+
+# --- UI ---
+streamlit==1.41.1
+
+# --- Generación de informes (stubs Fase 5) ---
+python-docx==1.1.2
+reportlab==4.2.5
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.0

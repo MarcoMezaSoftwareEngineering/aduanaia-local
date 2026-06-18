@@ -1,0 +1,69 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.Python
+build/
+dist/
+.eggs/
+
+# --- Virtualenv ---
+.venv/
+venv/
+env/
+
+# --- Env / secretos ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials*.json
+
+# --- Datos / artefactos locales ---
+data/processed/
+data/milvus/
+reports/*.pdf
+reports/*.docx
+docs/uploaded/
+
+# --- Modelos descargados ---
+models/
+.cache/
+
+# --- IDE / SO ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+logs/
+ingesta*.log
+
+# --- Tests / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Alembic ---
+# (no versions are excluded; commit your migrations)
+
+# --- Docker volúmenes locales ---
+volumes/
+
+# --- HuggingFace / Torch caches ---
+.huggingface/
+.torch/
+hf_cache/
+
+# --- Outputs temporales ---
+*.tmp
+*.bak

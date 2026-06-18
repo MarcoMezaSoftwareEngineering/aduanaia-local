@@ -1,0 +1,904 @@
+DOCUMENTO TÉCNICO DEL PROYECTO
+AduanaIA Local: Sistema inteligente de apoyo al análisis preliminar de mercancías restringidas, prohibidas e inmovilizadas
+________________________________________
+1. Nombre del proyecto
+AduanaIA Local
+Subtítulo técnico:
+Sistema RAG con agentes inteligentes para apoyo a la determinación preliminar de mercancías restringidas, prohibidas e inmovilizadas en procesos aduaneros.
+________________________________________
+2. Resumen ejecutivo
+El proyecto consiste en desarrollar un sistema local de inteligencia artificial orientado al campo aduanero, específicamente para apoyar el análisis preliminar de expedientes, mercancías, documentos y normativa relacionada con mercancías restringidas, prohibidas, inmovilizadas o sujetas a revisión documental.
+El sistema no reemplaza al funcionario aduanero ni emite decisiones legales definitivas. Su función es actuar como asistente técnico que:
+1.	Lee documentos aduaneros.
+2.	Extrae información relevante del expediente.
+3.	Busca normativa aplicable en una base documental local.
+4.	Identifica posibles restricciones, prohibiciones o requisitos faltantes.
+5.	Sugiere una recomendación preliminar sustentada.
+6.	Genera un informe técnico para revisión humana.
+El desarrollo debe realizarse priorizando herramientas gratuitas, open-source o sin licencias comerciales obligatorias, y debe ejecutarse localmente en una PC con GPU NVIDIA RTX 3080 de 10 GB de VRAM, evitando depender de APIs pagadas como OpenAI, Anthropic, Gemini, Azure o servicios cloud.
+________________________________________
+3. Problema que busca resolver
+En el proceso aduanero, especialmente en regímenes como envíos de entrega rápida, importación para consumo, revisión documentaria o reconocimiento físico, el funcionario debe analizar información dispersa:
+•	Descripción comercial de la mercancía.
+•	Subpartida nacional o partida arancelaria.
+•	Factura comercial.
+•	Guía aérea o documento de transporte.
+•	Declaración simplificada o DAM.
+•	Actas de inmovilización.
+•	Permisos sectoriales.
+•	Normativa vigente.
+•	Criterios internos.
+•	Antecedentes o casos similares.
+Este análisis consume tiempo y puede generar variabilidad en los criterios de revisión. Además, la normativa suele estar distribuida en múltiples documentos, resoluciones, procedimientos, tablas y comunicados.
+El problema principal es que el funcionario o analista necesita una herramienta que le permita consultar rápidamente la normativa y obtener una orientación preliminar, trazable y explicable.
+________________________________________
+4. Objetivo general
+Desarrollar un sistema local de inteligencia artificial basado en RAG y agentes, capaz de asistir en el análisis preliminar de mercancías aduaneras mediante consulta documental, recuperación normativa, evaluación de riesgo y generación de informes sustentados.
+________________________________________
+5. Objetivos específicos
+1.	Construir una base documental local con normativa aduanera, procedimientos, catálogos de mercancías restringidas, resoluciones, criterios técnicos y casos anonimizados.
+2.	Implementar un motor RAG que permita buscar información normativa relevante usando consultas en lenguaje natural.
+3.	Desarrollar agentes especializados mediante LangGraph para dividir el análisis en etapas.
+4.	Ejecutar el modelo de lenguaje localmente usando la GPU RTX 3080 de 10 GB.
+5.	Generar respuestas fundamentadas, con citas internas del documento fuente, evitando respuestas inventadas.
+6.	Permitir la carga de expedientes en PDF, texto o Excel.
+7.	Generar un informe técnico preliminar exportable en PDF o Word.
+8.	Registrar consultas, resultados, fuentes recuperadas y evaluación de confianza.
+________________________________________
+6. Alcance funcional del MVP
+El MVP deberá permitir:
+6.1. Carga documental
+El usuario podrá subir:
+•	PDF de expediente.
+•	Factura comercial.
+•	Guía aérea.
+•	Acta de inmovilización.
+•	Declaración simplificada.
+•	Archivos Excel con relación de mercancías.
+•	Texto manual con descripción comercial.
+6.2. Extracción de datos
+El sistema deberá extraer:
+•	Nombre o descripción de la mercancía.
+•	Cantidad.
+•	Unidad de medida.
+•	País de origen.
+•	Valor declarado.
+•	Subpartida, si existe.
+•	Documentos presentados.
+•	Documentos faltantes.
+•	Observaciones relevantes.
+•	Posible entidad competente.
+6.3. Consulta normativa
+El sistema deberá buscar en la base documental local:
+•	Normas aduaneras.
+•	Procedimientos de control.
+•	Catálogo de mercancías restringidas.
+•	Catálogo de mercancías prohibidas.
+•	Procedimientos de inmovilización.
+•	Requisitos sectoriales.
+•	Antecedentes o casos similares.
+•	Criterios técnicos previamente cargados.
+6.4. Análisis preliminar
+El sistema deberá clasificar el caso en alguno de estos niveles:
+•	Riesgo bajo: no se detectan restricciones relevantes en la base local.
+•	Riesgo medio: requiere revisión documental adicional.
+•	Riesgo alto: posible mercancía restringida, permiso faltante o inconsistencia relevante.
+•	Riesgo crítico: posible mercancía prohibida, causal de comiso, falsedad documental o imposibilidad de levante sin revisión humana.
+6.5. Recomendación preliminar
+El sistema podrá sugerir:
+•	Continuar con revisión manual.
+•	Solicitar documento faltante.
+•	Validar autorización de entidad competente.
+•	Mantener inmovilización.
+•	Evaluar reembarque.
+•	Derivar a especialista.
+•	No emitir recomendación por falta de información.
+6.6. Informe técnico
+El sistema deberá generar un informe con:
+1.	Resumen del expediente.
+2.	Datos extraídos.
+3.	Normativa relacionada.
+4.	Fuentes consultadas.
+5.	Análisis preliminar.
+6.	Nivel de riesgo.
+7.	Documentos faltantes.
+8.	Recomendación sugerida.
+9.	Advertencia de revisión humana obligatoria.
+________________________________________
+7. Alcance no funcional
+El sistema deberá cumplir con:
+•	Ejecución local.
+•	Sin dependencia obligatoria de servicios cloud.
+•	Sin uso de APIs pagadas.
+•	Uso preferente de GPU.
+•	Trazabilidad de fuentes.
+•	Logs de consultas.
+•	Control de errores.
+•	Separación entre recomendación IA y decisión humana.
+•	Capacidad de actualización documental.
+•	Interfaz simple para usuario no técnico.
+•	Arquitectura modular.
+________________________________________
+8. Limitaciones del sistema
+El sistema no debe:
+1.	Emitir decisiones legales definitivas.
+2.	Reemplazar al funcionario aduanero.
+3.	Inventar normativa si no encuentra sustento.
+4.	Recomendar levante, comiso o sanción sin advertencia de revisión humana.
+5.	Procesar información sensible sin anonimización.
+6.	Depender de internet para responder una vez cargada la base documental.
+7.	Usar servicios pagos como requisito obligatorio.
+8.	Hacer fine-tuning pesado en la RTX 3080 de 10 GB.
+________________________________________
+9. Hardware disponible
+La PC objetivo tiene:
+•	GPU: NVIDIA RTX 3080 de 10 GB VRAM.
+•	CPU: Intel Core i7-10700K.
+•	RAM recomendada: mínimo 32 GB; ideal 64 GB si se procesan varios PDFs.
+•	Disco: SSD/NVMe recomendado, mínimo 100 GB libres.
+•	Sistema operativo recomendado: Ubuntu 22.04/24.04 o Windows 11 con WSL2.
+Criterio técnico
+La inferencia del modelo debe priorizar la GPU. El CPU debe usarse principalmente para:
+•	Backend.
+•	Lectura de archivos.
+•	API.
+•	Procesamiento ligero.
+•	Interfaz.
+•	Base de datos.
+•	OCR básico cuando sea necesario.
+El LLM local debe ejecutarse en GPU mediante Ollama, llama.cpp o vLLM si el entorno lo permite.
+________________________________________
+10. Modelo de IA recomendado para la RTX 3080 10 GB
+Modelo principal recomendado
+Qwen3 8B Instruct cuantizado
+Formato sugerido:
+•	GGUF Q4_K_M o Q5_K_M.
+•	Ejecución mediante Ollama o llama.cpp.
+•	Contexto recomendado inicial: 4096 a 8192 tokens.
+•	Temperatura baja: 0.1 a 0.3.
+•	Top-p: 0.8 a 0.9.
+Alternativas
+1.	Llama 3.1 8B Instruct cuantizado
+2.	Mistral 7B Instruct cuantizado
+3.	Gemma 3 4B/12B cuantizado, si el rendimiento es aceptable
+4.	Phi-3.5 Mini, si se busca velocidad y bajo consumo
+Criterio de selección
+Para este proyecto no se recomienda usar modelos de 30B, 32B, 70B o superiores, porque la RTX 3080 de 10 GB no tiene VRAM suficiente para ejecutarlos cómodamente con buen rendimiento.
+La prioridad es usar un modelo de 7B u 8B bien configurado, más una buena base documental RAG. En este caso, la calidad del sistema dependerá más de la recuperación correcta de documentos que del tamaño del modelo.
+________________________________________
+11. Modelo de embeddings recomendado
+Opción recomendada
+BGE-M3
+Ventajas:
+•	Funciona bien en entornos multilingües.
+•	Adecuado para documentos en español.
+•	Soporta textos relativamente largos.
+•	Puede utilizarse para recuperación semántica.
+•	Compatible con flujos RAG.
+Alternativa ligera
+nomic-embed-text
+Ventajas:
+•	Fácil de usar con Ollama.
+•	Menor consumo de recursos.
+•	Adecuado para un MVP rápido.
+Recomendación práctica
+Para el MVP:
+•	Usar nomic-embed-text si se prioriza simplicidad.
+•	Usar BGE-M3 si se prioriza calidad de recuperación documental.
+________________________________________
+12. Tecnologías propuestas
+Backend
+•	Python 3.11 o 3.12
+•	FastAPI
+•	Pydantic
+•	Uvicorn
+Orquestación IA
+•	LangGraph
+•	LangChain
+Base vectorial
+•	Milvus Lite para MVP local
+•	Milvus Standalone para versión avanzada
+Base relacional
+•	PostgreSQL
+•	Alternativa inicial: SQLite si se desea simplificar
+Modelo local
+•	Ollama
+•	llama.cpp como alternativa
+•	Qwen3 8B cuantizado o modelo equivalente
+Extracción documental
+•	PyMuPDF
+•	pdfplumber
+•	Tesseract OCR
+•	PaddleOCR como alternativa para documentos escaneados
+Interfaz
+•	Streamlit para MVP rápido
+•	React + FastAPI para versión más profesional
+Exportación de informes
+•	python-docx para Word
+•	WeasyPrint o ReportLab para PDF
+•	Markdown como formato intermedio
+Control de versiones
+•	Git
+•	GitHub privado o GitLab local
+Contenedores
+•	Evitar Docker Desktop si se quiere evitar licenciamiento.
+•	Usar Docker Engine en Linux/WSL2 o Podman.
+________________________________________
+13. Arquitectura general del sistema
+Usuario
+  │
+  ▼
+Interfaz Web Local
+Streamlit o React
+  │
+  ▼
+Backend FastAPI
+  │
+  ├── Módulo de carga documental
+  ├── Módulo OCR / extracción PDF
+  ├── Módulo de normalización de texto
+  ├── Módulo RAG
+  ├── Módulo LangGraph
+  ├── Módulo de generación de informe
+  └── Módulo de auditoría/logs
+  │
+  ▼
+Base documental procesada
+  │
+  ├── PostgreSQL: metadatos, usuarios, consultas, auditoría
+  └── Milvus Lite: embeddings y búsqueda semántica
+  │
+  ▼
+Modelo local
+Ollama / llama.cpp / Qwen3 8B cuantizado
+  │
+  ▼
+Respuesta fundamentada + informe preliminar
+________________________________________
+14. Flujo IA propuesto con LangGraph
+El sistema debe dividir el proceso en agentes especializados. Esto evita que el modelo intente resolver todo en una sola respuesta.
+Inicio
+  │
+  ▼
+Agente 1: Ingesta documental
+  │
+  ▼
+Agente 2: Extracción estructurada
+  │
+  ▼
+Agente 3: Recuperación normativa RAG
+  │
+  ▼
+Agente 4: Evaluación de mercancía
+  │
+  ▼
+Agente 5: Evaluación documental
+  │
+  ▼
+Agente 6: Clasificación de riesgo
+  │
+  ▼
+Agente 7: Redacción de informe
+  │
+  ▼
+Revisión humana obligatoria
+________________________________________
+15. Descripción de agentes
+15.1. Agente de ingesta documental
+Responsable de recibir archivos y convertirlos a texto.
+Entrada:
+•	PDF
+•	Imagen
+•	Excel
+•	Texto manual
+Salida:
+{
+  "texto_extraido": "...",
+  "tipo_documento": "factura / guia / acta / expediente",
+  "calidad_extraccion": "alta / media / baja",
+  "requiere_ocr": true
+}
+________________________________________
+15.2. Agente extractor estructurado
+Responsable de convertir texto no estructurado en datos ordenados.
+Salida esperada:
+{
+  "mercancia": "suplemento alimenticio",
+  "descripcion_comercial": "frascos de cápsulas para consumo humano",
+  "cantidad": "120",
+  "unidad": "frasco",
+  "pais_origen": "Estados Unidos",
+  "subpartida": "no identificada",
+  "documentos_presentados": [
+    "factura comercial",
+    "guia aerea"
+  ],
+  "documentos_faltantes_posibles": [
+    "autorizacion sanitaria",
+    "registro sanitario"
+  ]
+}
+________________________________________
+15.3. Agente de recuperación normativa
+Responsable de consultar Milvus y recuperar fragmentos relevantes.
+Debe buscar por:
+•	Descripción de mercancía.
+•	Sinónimos.
+•	Subpartida.
+•	Entidad competente.
+•	Términos normativos.
+•	Documentos requeridos.
+Salida esperada:
+{
+  "fuentes_recuperadas": [
+    {
+      "documento": "Catalogo de mercancias restringidas",
+      "fragmento": "...",
+      "score": 0.83,
+      "pagina": 12
+    }
+  ]
+}
+________________________________________
+15.4. Agente evaluador de mercancía
+Responsable de analizar si la mercancía podría ser:
+•	Libre.
+•	Restringida.
+•	Prohibida.
+•	Sujeta a validación.
+•	Sujeta a revisión por entidad competente.
+Salida esperada:
+{
+  "clasificacion_preliminar": "posible mercancia restringida",
+  "entidad_competente_probable": "DIGEMID / SENASA / SUCAMEC / MTC / PRODUCE / MINSA / otra",
+  "fundamento": "La descripción se relaciona con productos de consumo humano...",
+  "nivel_confianza": "medio"
+}
+________________________________________
+15.5. Agente evaluador documental
+Responsable de comparar documentos presentados vs. documentos requeridos.
+Salida esperada:
+{
+  "documentos_presentados": [
+    "factura",
+    "guia aerea"
+  ],
+  "documentos_requeridos_probables": [
+    "autorizacion sanitaria"
+  ],
+  "brecha_documental": true,
+  "observacion": "No se encontró autorización sectorial en los documentos cargados."
+}
+________________________________________
+15.6. Agente clasificador de riesgo
+Responsable de asignar un nivel de riesgo.
+Reglas iniciales:
+Riesgo bajo:
+- No se detecta restricción.
+- Documentos aparentemente completos.
+- Fuentes recuperadas con baja alerta.
+
+Riesgo medio:
+- Existe incertidumbre.
+- Falta información.
+- La mercancía podría requerir validación adicional.
+
+Riesgo alto:
+- Se encuentra coincidencia con mercancía restringida.
+- Falta autorización probable.
+- Hay inconsistencias entre descripción y documentos.
+
+Riesgo crítico:
+- Se encuentra coincidencia con mercancía prohibida.
+- Hay posible causal de comiso.
+- Hay indicios de falsedad, ocultamiento o contradicción grave.
+________________________________________
+15.7. Agente redactor de informe
+Responsable de redactar un informe claro, técnico y no vinculante.
+Debe incluir:
+•	Resumen.
+•	Datos extraídos.
+•	Normativa consultada.
+•	Análisis.
+•	Riesgo.
+•	Recomendación.
+•	Advertencia de revisión humana.
+________________________________________
+16. Estructura de base de datos
+16.1. PostgreSQL
+Tablas sugeridas:
+tabla: documents
+id UUID PRIMARY KEY,
+filename TEXT,
+document_type TEXT,
+source TEXT,
+upload_date TIMESTAMP,
+hash TEXT,
+status TEXT,
+text_content TEXT,
+metadata JSONB
+tabla: chunks
+id UUID PRIMARY KEY,
+document_id UUID REFERENCES documents(id),
+chunk_index INTEGER,
+content TEXT,
+page_number INTEGER,
+metadata JSONB,
+milvus_vector_id TEXT
+tabla: queries
+id UUID PRIMARY KEY,
+user_query TEXT,
+created_at TIMESTAMP,
+model_used TEXT,
+risk_level TEXT,
+confidence_level TEXT,
+response TEXT
+tabla: retrieved_sources
+id UUID PRIMARY KEY,
+query_id UUID REFERENCES queries(id),
+document_id UUID REFERENCES documents(id),
+chunk_id UUID REFERENCES chunks(id),
+score FLOAT,
+content TEXT,
+page_number INTEGER
+tabla: case_analysis
+id UUID PRIMARY KEY,
+query_id UUID REFERENCES queries(id),
+merchandise_description TEXT,
+tariff_code TEXT,
+country_origin TEXT,
+detected_entity TEXT,
+document_gap BOOLEAN,
+risk_level TEXT,
+recommendation TEXT,
+human_review_status TEXT
+________________________________________
+17. Colección en Milvus
+Nombre sugerido:
+aduana_normativa_chunks
+Campos mínimos:
+{
+  "id": "uuid",
+  "vector": "embedding",
+  "document_id": "uuid",
+  "chunk_id": "uuid",
+  "document_type": "normativa / procedimiento / caso / catalogo",
+  "entity": "SUNAT / SENASA / DIGEMID / SUCAMEC / MTC / PRODUCE / MINSA",
+  "topic": "mercancia restringida",
+  "tariff_code": "opcional",
+  "year": "opcional",
+  "page_number": "opcional",
+  "text": "fragmento"
+}
+________________________________________
+18. Pipeline de ingesta documental
+Paso 1: Carga
+El usuario o administrador carga documentos base:
+•	Normativa.
+•	Procedimientos.
+•	Catálogos.
+•	Resoluciones.
+•	Casos anonimizados.
+Paso 2: Extracción
+Se usa:
+•	PyMuPDF para PDF digital.
+•	pdfplumber para tablas.
+•	Tesseract o PaddleOCR para PDF escaneado.
+Paso 3: Limpieza
+Eliminar:
+•	Encabezados repetidos.
+•	Pies de página.
+•	Numeración irrelevante.
+•	Caracteres rotos.
+•	Saltos excesivos.
+Paso 4: Chunking
+Recomendación inicial:
+chunk_size: 800 a 1200 tokens
+chunk_overlap: 100 a 200 tokens
+Para normativa, debe evitarse cortar artículos legales a la mitad. Si es posible, el chunk debe respetar:
+•	Artículo.
+•	Numeral.
+•	Inciso.
+•	Tabla.
+•	Anexo.
+Paso 5: Embeddings
+Generar embeddings con BGE-M3 o nomic-embed-text.
+Paso 6: Indexación
+Guardar:
+•	Texto completo en PostgreSQL.
+•	Embeddings en Milvus.
+•	Metadatos en ambas bases.
+________________________________________
+19. Pipeline de consulta
+Usuario ingresa caso
+  ↓
+Sistema extrae datos del expediente
+  ↓
+Normaliza descripción de mercancía
+  ↓
+Genera consultas semánticas
+  ↓
+Busca en Milvus
+  ↓
+Recupera top-k documentos
+  ↓
+Reordena resultados si se implementa reranker
+  ↓
+Envía contexto al LLM local
+  ↓
+LangGraph ejecuta agentes
+  ↓
+Genera análisis preliminar
+  ↓
+Muestra fuentes y nivel de confianza
+  ↓
+Genera informe exportable
+________________________________________
+20. Parámetros RAG recomendados
+top_k_inicial: 12
+top_k_final: 5
+chunk_size: 1000
+chunk_overlap: 150
+similarity_metric: cosine
+min_score_threshold: 0.55
+reranking: opcional
+modelo_embedding: BGE-M3
+modelo_llm: Qwen3 8B cuantizado
+temperatura: 0.2
+max_tokens_respuesta: 1500
+________________________________________
+21. Prompt base del sistema
+El LLM debe usar un prompt base similar al siguiente:
+Eres un asistente técnico para análisis preliminar aduanero. 
+Tu función es apoyar la revisión de mercancías, documentos y normativa. 
+No reemplazas al funcionario aduanero. 
+No emites decisiones legales definitivas. 
+Solo puedes fundamentar tus respuestas en las fuentes recuperadas. 
+Si no encuentras información suficiente, debes decirlo claramente. 
+No inventes artículos, normas, entidades ni requisitos. 
+Toda recomendación debe incluir advertencia de revisión humana obligatoria.
+________________________________________
+22. Formato de respuesta esperado
+{
+  "resumen_caso": "...",
+  "datos_extraidos": {
+    "mercancia": "...",
+    "cantidad": "...",
+    "pais_origen": "...",
+    "subpartida": "..."
+  },
+  "analisis_normativo": [
+    {
+      "fuente": "...",
+      "fragmento_relevante": "...",
+      "interpretacion": "..."
+    }
+  ],
+  "documentos_faltantes": [
+    "..."
+  ],
+  "nivel_riesgo": "bajo / medio / alto / critico",
+  "confianza": "baja / media / alta",
+  "recomendacion_preliminar": "...",
+  "advertencia": "La decisión final corresponde al funcionario competente."
+}
+________________________________________
+23. Interfaz de usuario del MVP
+Pantallas mínimas:
+Pantalla 1: Inicio
+•	Nombre del sistema.
+•	Botón para cargar expediente.
+•	Botón para consulta manual.
+•	Botón para administrar base normativa.
+Pantalla 2: Carga de expediente
+Campos:
+•	Archivo PDF.
+•	Tipo de documento.
+•	Descripción de mercancía.
+•	Subpartida, si se conoce.
+•	País de origen.
+•	Observación libre.
+Pantalla 3: Resultado
+Debe mostrar:
+•	Resumen del caso.
+•	Datos extraídos.
+•	Riesgo asignado.
+•	Documentos faltantes.
+•	Normativa encontrada.
+•	Fuentes usadas.
+•	Recomendación preliminar.
+•	Botón de exportar informe.
+Pantalla 4: Administración documental
+Funciones:
+•	Subir normativa.
+•	Reprocesar documentos.
+•	Ver documentos indexados.
+•	Eliminar documento.
+•	Ver fecha de actualización.
+________________________________________
+24. API sugerida
+POST /documents/upload
+Carga documentos normativos o expedientes.
+POST /documents/index
+Procesa documentos y genera embeddings.
+POST /case/analyze
+Analiza un expediente o descripción de mercancía.
+Entrada:
+{
+  "description": "suplemento alimenticio en capsulas",
+  "tariff_code": "",
+  "country_origin": "Estados Unidos",
+  "documents": ["factura.pdf", "guia.pdf"]
+}
+Salida:
+{
+  "risk_level": "alto",
+  "recommendation": "Validar autorización sanitaria...",
+  "sources": [],
+  "report_id": "uuid"
+}
+GET /reports/{id}
+Devuelve el informe generado.
+GET /documents
+Lista documentos cargados.
+DELETE /documents/{id}
+Elimina documentos de PostgreSQL y Milvus.
+________________________________________
+25. Seguridad y privacidad
+El sistema debe considerar:
+1.	Ejecución local.
+2.	No enviar documentos a servicios externos.
+3.	Anonimización de expedientes reales.
+4.	Registro de usuario y fecha de consulta.
+5.	Logs de fuentes consultadas.
+6.	Control de acceso básico.
+7.	Respaldo de base documental.
+8.	Hash de documentos para evitar duplicados.
+9.	Separación entre documentos normativos y expedientes de prueba.
+________________________________________
+26. Auditoría y trazabilidad
+Cada respuesta debe guardar:
+•	Consulta original.
+•	Modelo usado.
+•	Versión del modelo.
+•	Documentos recuperados.
+•	Chunks usados.
+•	Puntajes de similitud.
+•	Respuesta generada.
+•	Fecha y hora.
+•	Usuario.
+•	Nivel de riesgo.
+•	Estado de revisión humana.
+Esto permitirá evaluar si la IA está ayudando correctamente o si está generando errores.
+________________________________________
+27. Métricas de evaluación
+Métricas técnicas
+•	Tiempo promedio de respuesta.
+•	Uso de VRAM.
+•	Uso de CPU.
+•	Tiempo de extracción PDF.
+•	Tiempo de recuperación en Milvus.
+•	Tiempo de generación LLM.
+•	Número de documentos recuperados.
+Métricas de calidad
+•	Precisión de recuperación normativa.
+•	Concordancia con criterio experto.
+•	Tasa de falsos positivos.
+•	Tasa de falsos negativos.
+•	Porcentaje de respuestas con fuente.
+•	Porcentaje de respuestas que reconocen falta de información.
+•	Calidad del informe generado.
+Métricas de negocio/proceso
+•	Reducción del tiempo de análisis preliminar.
+•	Mayor uniformidad de criterios.
+•	Mejor trazabilidad documental.
+•	Menor omisión de requisitos.
+•	Satisfacción del usuario evaluador.
+________________________________________
+28. Criterios de aceptación del MVP
+El MVP se considerará funcional si cumple:
+1.	Permite cargar al menos 50 documentos normativos.
+2.	Procesa PDFs digitales y extrae texto.
+3.	Permite realizar consultas en lenguaje natural.
+4.	Recupera fuentes relevantes desde Milvus.
+5.	Genera una respuesta con sustento documental.
+6.	Identifica al menos tres niveles de riesgo.
+7.	Genera informe exportable.
+8.	Ejecuta el LLM localmente usando la RTX 3080.
+9.	No requiere APIs pagadas.
+10.	Advierte cuando no hay información suficiente.
+11.	Guarda logs de consultas y fuentes.
+12.	Permite actualizar la base documental.
+________________________________________
+29. Fases de desarrollo
+Fase 1: Preparación del entorno
+Duración estimada: 1 a 2 semanas.
+Actividades:
+•	Instalar Python.
+•	Instalar drivers NVIDIA.
+•	Instalar Ollama o llama.cpp.
+•	Probar modelo local en GPU.
+•	Instalar Milvus Lite.
+•	Crear estructura base del proyecto.
+•	Configurar FastAPI o Streamlit.
+Entregable:
+•	Ambiente local funcionando.
+•	Modelo local respondiendo por GPU.
+________________________________________
+Fase 2: RAG documental básico
+Duración estimada: 2 a 3 semanas.
+Actividades:
+•	Cargar documentos normativos.
+•	Extraer texto.
+•	Dividir en chunks.
+•	Generar embeddings.
+•	Indexar en Milvus.
+•	Realizar búsqueda semántica.
+•	Generar respuestas con fuentes.
+Entregable:
+•	Chat normativo aduanero funcional.
+________________________________________
+Fase 3: Análisis de expedientes
+Duración estimada: 2 a 3 semanas.
+Actividades:
+•	Cargar PDF de expediente.
+•	Extraer datos clave.
+•	Normalizar descripción de mercancía.
+•	Buscar normativa relacionada.
+•	Detectar documentos faltantes.
+•	Clasificar riesgo.
+Entregable:
+•	Módulo de análisis preliminar de caso.
+________________________________________
+Fase 4: LangGraph y agentes
+Duración estimada: 2 semanas.
+Actividades:
+•	Crear grafo de agentes.
+•	Separar extracción, búsqueda, evaluación y redacción.
+•	Manejar estados intermedios.
+•	Guardar trazabilidad por agente.
+•	Implementar manejo de errores.
+Entregable:
+•	Flujo agentic RAG estable.
+________________________________________
+Fase 5: Informe exportable e interfaz
+Duración estimada: 1 a 2 semanas.
+Actividades:
+•	Diseñar pantalla de carga.
+•	Diseñar pantalla de resultados.
+•	Generar informe Word/PDF.
+•	Implementar historial.
+•	Validar con casos de prueba.
+Entregable:
+•	MVP demostrable.
+________________________________________
+30. Estructura sugerida del repositorio
+aduanaia-local/
+│
+├── app/
+│   ├── main.py
+│   ├── config.py
+│   ├── api/
+│   │   ├── documents.py
+│   │   ├── analysis.py
+│   │   └── reports.py
+│   │
+│   ├── core/
+│   │   ├── ingestion.py
+│   │   ├── extraction.py
+│   │   ├── chunking.py
+│   │   ├── embeddings.py
+│   │   ├── vectorstore.py
+│   │   ├── rag.py
+│   │   ├── agents.py
+│   │   └── report_generator.py
+│   │
+│   ├── db/
+│   │   ├── postgres.py
+│   │   ├── models.py
+│   │   └── migrations/
+│   │
+│   ├── prompts/
+│   │   ├── system_prompt.txt
+│   │   ├── extractor_prompt.txt
+│   │   ├── evaluator_prompt.txt
+│   │   └── report_prompt.txt
+│   │
+│   └── utils/
+│       ├── ocr.py
+│       ├── pdf.py
+│       └── logging.py
+│
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── milvus/
+│
+├── reports/
+├── tests/
+├── requirements.txt
+├── README.md
+└── .env.example
+________________________________________
+31. Instalación base sugerida
+Crear entorno
+python -m venv .venv
+source .venv/bin/activate
+En Windows:
+.venv\Scripts\activate
+Instalar dependencias iniciales
+pip install fastapi uvicorn pydantic python-dotenv
+pip install langchain langgraph
+pip install pymilvus
+pip install pymupdf pdfplumber pytesseract pillow
+pip install sentence-transformers transformers accelerate
+pip install psycopg2-binary sqlalchemy alembic
+pip install streamlit
+pip install python-docx reportlab
+Instalar y probar Ollama
+ollama pull qwen3:8b
+ollama run qwen3:8b
+Verificar uso de GPU
+nvidia-smi
+ollama ps
+________________________________________
+32. Recomendaciones de rendimiento para RTX 3080 10 GB
+1.	Usar modelo 7B u 8B cuantizado.
+2.	Preferir cuantización Q4_K_M o Q5_K_M.
+3.	Limitar contexto inicial a 4096 o 8192 tokens.
+4.	Evitar cargar modelos grandes.
+5.	Usar batch pequeño.
+6.	No ejecutar OCR masivo mientras el LLM está generando.
+7.	Mantener Milvus Lite local.
+8.	Procesar documentos en cola.
+9.	Usar streaming de respuesta.
+10.	Monitorear VRAM con nvidia-smi.
+________________________________________
+33. Riesgos técnicos
+Riesgo 1: Alucinaciones del modelo
+Mitigación:
+•	Restringir respuesta a fuentes recuperadas.
+•	Exigir citas internas.
+•	Usar temperatura baja.
+•	Mostrar advertencia cuando no hay evidencia.
+Riesgo 2: Mala extracción de PDFs escaneados
+Mitigación:
+•	Usar OCR.
+•	Mostrar calidad de extracción.
+•	Permitir corrección manual.
+Riesgo 3: Recuperación normativa incorrecta
+Mitigación:
+•	Mejorar chunking.
+•	Usar metadatos.
+•	Probar BGE-M3.
+•	Agregar reranker si es necesario.
+Riesgo 4: Falta de VRAM
+Mitigación:
+•	Usar modelo más pequeño.
+•	Reducir contexto.
+•	Usar cuantización Q4.
+•	Evitar modelos mayores a 8B.
+Riesgo 5: Base normativa desactualizada
+Mitigación:
+•	Registrar fecha de carga.
+•	Crear módulo de actualización.
+•	Mostrar versión documental usada.
+________________________________________
+34. Recomendación final de implementación
+Para iniciar, se recomienda implementar el proyecto en este orden:
+1.	RAG simple con documentos normativos.
+2.	Consulta en lenguaje natural.
+3.	Carga de expediente PDF.
+4.	Extracción estructurada.
+5.	Evaluación de riesgo.
+6.	LangGraph con agentes.
+7.	Informe exportable.
+8.	Validación con casos reales anonimizados.
+No se recomienda iniciar con una arquitectura demasiado grande. El valor principal del MVP está en demostrar que el sistema puede recuperar normativa correcta, analizar un caso y generar una recomendación preliminar sustentada.
+________________________________________
+35. Producto final esperado
+El producto final del MVP será una aplicación local llamada AduanaIA Local, ejecutada en una PC con RTX 3080 de 10 GB, que permita cargar documentos aduaneros, consultar normativa, analizar expedientes, detectar posibles restricciones o documentos faltantes y generar informes preliminares sustentados para revisión humana.
+La IA debe funcionar como asistente técnico, no como autoridad decisoria.
+________________________________________
+36. Frase funcional del sistema
+“AduanaIA Local ayuda al analista aduanero a revisar expedientes y mercancías mediante búsqueda normativa inteligente, análisis documental y generación de recomendaciones preliminares trazables, ejecutándose localmente sin depender de servicios pagos.”
