@@ -11,7 +11,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from app.config import settings
-from app.core import embeddings, llm, vectorstore
+from app.core import embeddings, llm, query_expansion, vectorstore
 from app.db import models
 from app.db.session import session_scope
 from app.utils.logging import get_logger
@@ -78,8 +78,15 @@ def _resolve_document_filenames(doc_ids: list[str]) -> dict[str, str]:
 
 
 def retrieve(question: str) -> list[SourceRef]:
-    """Embebe la pregunta, busca top_k en Milvus, filtra por score, devuelve top_k_final."""
-    vec = embeddings.embed_query(question)
+    """Embebe la pregunta, busca top_k en Milvus, filtra por score, devuelve top_k_final.
+
+    La pregunta se expande con [query_expansion.expand_query] antes del embedding para
+    mejorar el recall cuando contiene códigos legales (ej. 'N° 184-2020/SUNAT').
+    """
+    expanded = query_expansion.expand_query(question)
+    if expanded != question:
+        log.info("Query expandida: %r -> %r", question[:80], expanded[:200])
+    vec = embeddings.embed_query(expanded)
     raw_hits = vectorstore.search(vec.tolist(), top_k=settings.rag_top_k)
     filtered = [h for h in raw_hits if h.score >= settings.rag_min_score]
     filtered = filtered[: settings.rag_top_k_final]

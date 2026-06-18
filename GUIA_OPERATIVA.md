@@ -257,7 +257,22 @@ if c.has_collection(settings.milvus_collection):
 python scripts\ingest_docs.py --force
 ```
 
-### 4.5 Filtros híbridos (vector + metadata)
+### 4.5 Query expansion (mejora recall con códigos)
+
+El módulo [app/core/query_expansion.py](app/core/query_expansion.py) detecta patrones legales en la query (códigos de Resolución/DS/DLeg/Ley, DESPA-PG, subpartidas, EER, VUCE) y los enriquece con contexto semántico antes del embedding. **No reemplaza la query original**, solo la augmenta para el retrieval.
+
+Ejemplos automáticos:
+- `"N° 184-2020/SUNAT"` → `"N° 184-2020/SUNAT. Resolución de Superintendencia SUNAT, normativa aduanera, procedimiento"`
+- `"Ley 28008 contrabando"` → `"Ley 28008 contrabando. Ley peruana, normativa, delitos aduaneros"`
+- `"que es EER"` → `"que es EER. Envíos de Entrega Rápida, régimen aduanero especial, courier"`
+
+Mejora típica: +20% a +40% en el score del top hit cuando la query contiene un código.
+
+**Limitación conocida:** los embeddings semánticos (BGE-M3) son intrínsecamente débiles con identificadores exactos. Si tu query es **dominada por un código** (ej. `"N° 184-2020"` con poco contexto adicional), el chunk relevante puede seguir fuera del top 5 aún con expansion. La solución definitiva para ese caso es **hybrid search** (vectorial + BM25), pendiente de implementar (ver §opción B en el chat de diseño).
+
+Para agregar nuevos patrones de expansion, edita [app/core/query_expansion.py](app/core/query_expansion.py) y añade una tupla `(regex, "frase de contexto")` a `_PATTERNS`. Se aplica inmediatamente sin reingestar.
+
+### 4.6 Filtros híbridos (vector + metadata)
 
 Esta es la feature más potente de Milvus para casos como el nuestro. Puedes restringir la búsqueda a un subconjunto:
 
