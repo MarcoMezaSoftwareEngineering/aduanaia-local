@@ -217,6 +217,8 @@ git clone https://github.com/MarcoMezaSoftwareEngineering/aduanaia-local.git
 cd aduanaia-local
 ```
 
+> Si prefieres otro nombre de carpeta local: `git clone URL nombre_que_quieras` y luego `cd nombre_que_quieras`. **Recuerda usar tu ruta real en todos los comandos siguientes** (esta guía asume `aduanaia-local`).
+
 Verifica que estás en la raíz correcta:
 
 ```powershell

@@ -2,6 +2,8 @@
 
 Después del [setup inicial](SETUP.md), esta es la rutina para **abrir el proyecto, probarlo y cerrarlo cada día**. Toma 1–2 minutos.
 
+> **Nota sobre la ruta del proyecto:** los comandos asumen `F:\PROGRAMACION\aduanaia-local` porque eso es lo que crea `git clone` por defecto. Si clonaste con otro nombre o la carpeta es distinta (ej. `F:\PROGRAMACION\ia_test_langgraph` si ya tenías el código antes de subirlo a GitHub), reemplaza la ruta en todos los `cd`.
+
 ---
 
 ## Modelo mental: qué hay que arrancar
@@ -37,11 +39,9 @@ Si responde con una tabla (aunque sea vacía), el daemon está vivo. Si dice "ca
 
 ### Paso 2 — Levantar los containers de Milvus
 
-Si tus containers ya existían de ayer (es lo normal), **basta con `start`** (no `up -d` que recrearía cosas):
-
 ```powershell
 cd F:\PROGRAMACION\aduanaia-local
-docker compose start
+docker compose up -d
 ```
 
 Espera ~30 segundos y verifica:
@@ -53,8 +53,10 @@ docker compose ps
 Los 4 servicios (`etcd`, `minio`, `milvus`, `attu`) deben estar en `(healthy)` o al menos `Up`.
 
 > **Diferencia entre `up -d` y `start`**:
-> - `up -d` crea los containers (la primera vez) o los recrea si cambiaste `docker-compose.yml`.
-> - `start` solo enciende containers ya existentes. **Es el comando del día a día.**
+> - `up -d` crea los containers que no existan y arranca los que estén apagados. **Es idempotente y seguro de re-correr siempre.**
+> - `start` solo enciende containers que estén en estado `Exited`. Si un container quedó en `Created` (creado pero nunca arrancado), `start` NO lo enciende.
+>
+> **En la práctica, `docker compose up -d` es el comando recomendado del día a día.** `start` puede dejarte servicios faltantes si algo se quedó a medias el día anterior.
 
 ### Paso 3 — Activar el entorno virtual de Python
 
@@ -220,6 +222,8 @@ python -c "import torch; print('CUDA:', torch.cuda.is_available())"
 |---|---|
 | `docker ps` dice "Cannot connect to daemon" | Docker Desktop no abierto. Ábrelo y espera 30s |
 | `docker compose start` dice "no such service" | Estás en la carpeta equivocada. `cd` a la raíz del repo |
+| `docker compose ps` solo muestra 2 containers (faltan milvus/attu) | Estaban en estado `Created` pero nunca arrancaron. Usa `docker compose up -d` en lugar de `start` |
+| `docker compose up -d` arranca pero **milvus crashea con exit 134** y logs dicen `lookup etcd ... network is unreachable` | La red interna de Docker quedó rota. **Solución:** `docker compose down` (SIN `-v`, NO borra datos) y luego `docker compose up -d`. Los vectores indexados persisten en `volumes/` |
 | Activar venv falla con "execution policy" | `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` y reintenta |
 | Streamlit no abre el navegador | Abre manual http://localhost:8501 |
 | Streamlit dice "port 8501 already in use" | Otra instancia corriendo. `Ctrl+C` en la otra terminal, o usa `--server.port 8502` |
@@ -236,7 +240,7 @@ Para troubleshooting completo, ver sección 9 de [GUIA_OPERATIVA.md](GUIA_OPERAT
 ```powershell
 # === AL INICIO DEL DÍA ===
 cd F:\PROGRAMACION\aduanaia-local
-docker compose start            # arranca containers (10-30s)
+docker compose up -d            # arranca containers, idempotente (10-30s)
 .\.venv\Scripts\Activate.ps1    # activa venv
 streamlit run ui\streamlit_app.py    # lanza UI
 
